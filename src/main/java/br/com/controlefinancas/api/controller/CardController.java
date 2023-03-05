@@ -18,6 +18,7 @@ import br.com.controlefinancas.api.domain.card.ActiveCardDto;
 import br.com.controlefinancas.api.domain.card.Card;
 import br.com.controlefinancas.api.domain.card.CardRepository;
 import br.com.controlefinancas.api.domain.card.RequestCardDto;
+import br.com.controlefinancas.api.domain.card.RequestCardUpdateDto;
 import br.com.controlefinancas.api.domain.card.ResponseCardDto;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -55,7 +56,7 @@ public class CardController {
 	
 	@PutMapping("/{id}")
 	@Transactional
-	public ResponseEntity<?> updateCard(@Valid @RequestBody RequestCardDto cardDto, @PathVariable Long id){
+	public ResponseEntity<?> updateCard(@Valid @RequestBody RequestCardUpdateDto cardDto, @PathVariable Long id){
 		var card = repository.getReferenceById(id);
 		card.update(cardDto);
 		

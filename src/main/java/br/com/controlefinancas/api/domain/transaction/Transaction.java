@@ -16,20 +16,23 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity(name="Transaction")
 @Table(name = "transactions")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @EqualsAndHashCode(of = "id")
 public class Transaction {
-
+	
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@Column(name = "reference_date")
 	private LocalDate referenceDate;
-	@ManyToOne(fetch = FetchType.LAZY)
+
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "card_id")
 	private Card card;
 	@Column(name = "user_card")
@@ -50,3 +53,4 @@ public class Transaction {
 		this.installments = installments;
 	}
 }
+

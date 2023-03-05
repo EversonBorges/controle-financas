@@ -17,4 +17,5 @@ public record ResponseTransactionDto(Long id, LocalDate referenceDate, Card card
 				transaction.getInstallments()
 			);
 	}
+
 }
