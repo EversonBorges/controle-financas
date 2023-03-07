@@ -35,15 +35,15 @@ public class TransactionController {
 	@PostMapping
 	@Transactional
 	public ResponseEntity<?> registerTransaction(@Valid @RequestBody RequestTransactionDto transactionDto, UriComponentsBuilder uriBuilder){
-		var transaction =  service.createTransaction(transactionDto);
-		var uri = uriBuilder.path("/transaction/{id}").buildAndExpand(transaction.id()).toUri();
+		service.createTransaction(transactionDto);
+		var uri = uriBuilder.path("/transactions/all/{id}").buildAndExpand(transactionDto.idCard()).toUri();
 		
-		return ResponseEntity.created(uri).body(transaction);
+		return ResponseEntity.created(uri).build();
 	}
 	
-	@GetMapping
-	public ResponseEntity<Page<ResponseTransactionDto>> getAllTransactions(Pageable pageable){
-		var page = repository.findAll(pageable).map(ResponseTransactionDto::new);
+	@GetMapping("all/{id}")
+	public ResponseEntity<Page<ResponseTransactionDto>> getAllTransactionsByCardId(Pageable pageable,@PathVariable Long id){
+		var page = repository.findAllTransactionsByCardId(pageable, id).map(ResponseTransactionDto::new);
 		
 		return ResponseEntity.ok(page);
 	}

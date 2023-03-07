@@ -1,5 +1,8 @@
 package br.com.controlefinancas.api.domain.transaction;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +17,24 @@ public class TransactionService {
 	@Autowired 
 	private CardRepository cardRepository;
 	
-	public ResponseTransactionDto createTransaction(@Valid RequestTransactionDto dto) {
+	public void createTransaction(@Valid RequestTransactionDto dto){
+	
 		var card = cardRepository.findById(dto.idCard()).get();
-		//TODO tratar caso card seja nulo
-		 var transaction = new Transaction(dto.referenceDate(), card, dto.userCard(), dto.purchaseDescription(), dto.price(), dto.installments());
-		 repository.save(transaction);
-		return new ResponseTransactionDto(transaction);
+		List<Transaction> transactions = new ArrayList<>();
+
+		var installments = dto.installments();
+		for (int i = 0; i < dto.installments(); i++) {
+			var transaction = new Transaction(
+					i == 0 ? dto.referenceDate(): dto.referenceDate().plusMonths(i), 
+					card, 
+					dto.userCard(), 
+					dto.purchaseDescription(), 
+					dto.price(), 
+					installments);
+			transactions.add(transaction);
+			installments--;
+		}
+		repository.saveAll(transactions);
 	}
 	
 	public Transaction update(RequestTransactionUpdateDto dto) {
