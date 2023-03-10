@@ -36,7 +36,7 @@ public class Card {
 	@Column(name = "active")
 	private Boolean active;
 	
-	@JsonIgnore
+	
 	@OneToMany(mappedBy = "card", fetch = FetchType.LAZY)
 	private List<Transaction> transactions;
 

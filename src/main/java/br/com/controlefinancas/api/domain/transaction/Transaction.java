@@ -2,6 +2,8 @@ package br.com.controlefinancas.api.domain.transaction;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import br.com.controlefinancas.api.domain.card.Card;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,6 +34,7 @@ public class Transaction {
 	@Column(name = "reference_date")
 	private LocalDate referenceDate;
 
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "card_id")
 	private Card card;

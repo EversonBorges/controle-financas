@@ -19,7 +19,7 @@ public class TransactionService {
 	
 	public void createTransaction(@Valid RequestTransactionDto dto){
 	
-		var card = cardRepository.findById(dto.idCard()).get();
+		var card = cardRepository.getReferenceById(dto.idCard());
 		List<Transaction> transactions = new ArrayList<>();
 
 		var installments = dto.installments();

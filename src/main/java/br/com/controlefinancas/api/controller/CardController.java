@@ -1,5 +1,7 @@
 package br.com.controlefinancas.api.controller;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,8 +43,8 @@ public class CardController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<Page<ResponseCardDto>> getAllCards(@PageableDefault(size = 10, sort = {"nameCard"}) Pageable pageable){
-		var page = repository.findAllByActiveTrue(pageable).map(ResponseCardDto::new);
+	public ResponseEntity<Page<ResponseCardDto>> getAllCards(LocalDate referenceDate, Pageable pageable){
+		var page = repository.findAllByActiveTrueAndTransactionsReferenceDate(pageable, referenceDate).map(ResponseCardDto::new);
 		
 		return ResponseEntity.ok(page);
 	}
