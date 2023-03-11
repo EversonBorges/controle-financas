@@ -1,7 +1,9 @@
 package br.com.controlefinancas.api.domain.transaction;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -67,6 +69,15 @@ public class TransactionService {
 		}
 		
 		return transaction;
+	}
+
+	public Map<String, String> getMonthAndYearDateString(String referenceDate) {
+		
+		Map<String, String> monthAndYear = new HashMap<String, String>();
+		monthAndYear.put("MONTH", referenceDate.substring(4, 6));
+		monthAndYear.put("YEAR", referenceDate.substring(7, 11));
+		
+		return monthAndYear;
 	}
 
 }

@@ -1,17 +1,10 @@
 package br.com.controlefinancas.api.domain.card;
 
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import br.com.controlefinancas.api.domain.transaction.Transaction;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -35,14 +28,19 @@ public class Card {
 	private String owner;
 	@Column(name = "active")
 	private Boolean active;
+	@Column(name= "duo_date")
+	private Integer duoDate;
+	@Column(name = "limit_card")
+	private Double limitCard;
+	@Column(name = "best_day_buy")
+	private Integer bestDayBuy;
 	
-	
-	@OneToMany(mappedBy = "card", fetch = FetchType.LAZY)
-	private List<Transaction> transactions;
-
 	public Card(RequestCardDto cardDto) {
 		this.nameCard = cardDto.nameCard();
 		this.owner = cardDto.owner();
+		this.duoDate = cardDto.duoDate();
+		this.limitCard = cardDto.limitCard();
+		this.bestDayBuy = cardDto.bestDayBuy();
 		this.active = true;
 	}
 
@@ -54,6 +52,18 @@ public class Card {
 		
 		if(cardDto.owner() != null) {
 			this.owner = cardDto.owner();
+		}
+		
+		if(cardDto.duoDate() != null) {
+			this.duoDate = cardDto.duoDate();
+		}
+		
+		if(cardDto.limitCard() != null) {
+			this.limitCard = cardDto.limitCard();
+		}
+		
+		if(cardDto.bestDayBuy() != null) {
+			this.bestDayBuy = cardDto.bestDayBuy();
 		}
 	}
 

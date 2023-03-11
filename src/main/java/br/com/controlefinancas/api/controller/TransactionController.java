@@ -1,5 +1,7 @@
 package br.com.controlefinancas.api.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,9 +43,11 @@ public class TransactionController {
 		return ResponseEntity.created(uri).build();
 	}
 	
-	@GetMapping("all/{id}")
-	public ResponseEntity<Page<ResponseTransactionDto>> getAllTransactionsByCardId(Pageable pageable,@PathVariable Long id){
-		var page = repository.findAllTransactionsByCardId(pageable, id).map(ResponseTransactionDto::new);
+	@GetMapping("card_id/{id}")
+	public ResponseEntity<Page<ResponseTransactionDto>> getAllTransactionsByCardId(Pageable pageable,  @PathVariable Long id, String referenceDate){
+		Map<String, String> mapDate = service.getMonthAndYearDateString(referenceDate);
+		var page = repository.findAllTransactionsByCardIdAndMonthAndYearReferences(pageable, id, mapDate.get("MONTH"), mapDate.get("YEAR"))
+				.map(ResponseTransactionDto::new);
 		
 		return ResponseEntity.ok(page);
 	}

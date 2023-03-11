@@ -33,7 +33,6 @@ public class Transaction {
 	private Long id;
 	@Column(name = "reference_date")
 	private LocalDate referenceDate;
-
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "card_id")
