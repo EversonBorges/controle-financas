@@ -15,14 +15,14 @@ public record RequestTransactionDto(
 		LocalDate referenceDate, 
 		@NotNull
 		Long idCard,
-		@NotBlank
-		String userCard, 
+		@NotNull
+		Long userCardId, 
 		@NotBlank
 		String purchaseDescription, 
 		@NotNull
 		Double price, 
 		@NotNull
-		Integer installments
+		Integer installmentsTotal
 	) {
 
 }

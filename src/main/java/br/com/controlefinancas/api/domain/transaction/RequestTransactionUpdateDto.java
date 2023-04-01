@@ -12,10 +12,10 @@ public record RequestTransactionUpdateDto(
 		@JsonFormat(pattern = "dd/MM/yyyy")
 		LocalDate referenceDate, 
 		Long idCard,
-		String userCard, 
+		Long userCardId, 
 		String purchaseDescription, 
 		Double price, 
-		Integer installments
+		Integer installmentsTotal
 	) {
 
 }

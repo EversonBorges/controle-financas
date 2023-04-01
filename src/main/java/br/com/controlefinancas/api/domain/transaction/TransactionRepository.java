@@ -6,12 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long>{
-	@Query("""
+	/*@Query("""
 			SELECT t FROM Transaction t
 			WHERE t.card.id = :id
 			AND MONTH(t.referenceDate) = :month
 			AND YEAR(t.referenceDate) = :year
 			""")
-	Page<Transaction> findAllTransactionsByCardIdAndMonthAndYearReferences(Pageable pageable, Long id, String month, String year);
+	Page<Transaction> findAllTransactionsByCardIdAndMonthAndYearReferences(Pageable pageable, Long id, String month, String year);*/
 
 }

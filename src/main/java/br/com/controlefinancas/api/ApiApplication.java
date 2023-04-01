@@ -13,14 +13,16 @@ public class ApiApplication {
 		SpringApplication.run(ApiApplication.class, args);
 	}
 
-	@Bean
+	/*@Bean
 	public WebMvcConfigurer corsConfigurer() {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/cards").allowedOrigins("http://localhost:3000");
-				registry.addMapping("/transactions").allowedOrigins("http://localhost:3000");
+				registry.addMapping("/cards").allowedOrigins("http://127.0.0.1:5173");
+				registry.addMapping("/cards/allCardsActive").allowedOrigins("http://127.0.0.1:5173");
+				registry.addMapping("/transactions").allowedOrigins("http://127.0.0.1:5173");
+				registry.addMapping("activateAndDeactivate/id").allowedOrigins("http://127.0.0.1:5173");
 			}
 		};
-	}
+	}*/
 }

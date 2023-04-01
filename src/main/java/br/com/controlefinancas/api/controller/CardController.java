@@ -1,5 +1,7 @@
 package br.com.controlefinancas.api.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +20,7 @@ import br.com.controlefinancas.api.domain.card.Card;
 import br.com.controlefinancas.api.domain.card.CardRepository;
 import br.com.controlefinancas.api.domain.card.RequestCardDto;
 import br.com.controlefinancas.api.domain.card.RequestCardUpdateDto;
+import br.com.controlefinancas.api.domain.card.ResponseCardActiveDTO;
 import br.com.controlefinancas.api.domain.card.ResponseCardDto;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -39,9 +42,16 @@ public class CardController {
 		return ResponseEntity.created(uri).body(new ResponseCardDto(card));
 	}
 	
+	@GetMapping("/allCardsActive")
+	public ResponseEntity<Page<ResponseCardDto>> getAllCardsActive(Pageable pageable){
+		var page = repository.findAllByActiveTrue(pageable).map(ResponseCardDto::new);
+		
+		return ResponseEntity.ok(page);
+	}
+	
 	@GetMapping
 	public ResponseEntity<Page<ResponseCardDto>> getAllCards(Pageable pageable){
-		var page = repository.findAllByActiveTrue(pageable).map(ResponseCardDto::new);
+		var page = repository.findAll(pageable).map(ResponseCardDto::new);
 		
 		return ResponseEntity.ok(page);
 	}
@@ -51,6 +61,12 @@ public class CardController {
 		var card = repository.getReferenceById(id);
 		
 		return ResponseEntity.ok(new ResponseCardDto(card));
+	}
+	
+	@GetMapping("/listCardActive")
+	public ResponseEntity<List<ResponseCardActiveDTO>> getListCardActive(){
+		 var cards = repository.findAllByActiveTrue().stream().map(ResponseCardActiveDTO::new).toList();
+		return ResponseEntity.ok(cards);
 	}
 	
 	@PutMapping("/{id}")

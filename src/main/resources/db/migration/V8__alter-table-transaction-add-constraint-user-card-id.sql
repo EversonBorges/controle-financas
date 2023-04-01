@@ -1,0 +1,1 @@
+alter table transactions add constraint fk_user_card_id foreign key(user_card_id) references user_card(id);

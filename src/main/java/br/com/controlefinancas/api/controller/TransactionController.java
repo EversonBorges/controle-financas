@@ -5,6 +5,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import br.com.controlefinancas.api.domain.installments.InstallmentRepository;
+import br.com.controlefinancas.api.domain.installments.ResponseInstallmentsDto;
 import br.com.controlefinancas.api.domain.transaction.RequestTransactionDto;
 import br.com.controlefinancas.api.domain.transaction.RequestTransactionUpdateDto;
 import br.com.controlefinancas.api.domain.transaction.ResponseTransactionDto;
@@ -32,10 +35,13 @@ public class TransactionController {
 	private TransactionRepository repository;
 	
 	@Autowired
+	private InstallmentRepository installmentRepository;
+	
+	@Autowired
 	private TransactionService service;
 	
+	
 	@PostMapping
-	@Transactional
 	public ResponseEntity<?> registerTransaction(@Valid @RequestBody RequestTransactionDto transactionDto, UriComponentsBuilder uriBuilder){
 		service.createTransaction(transactionDto);
 		var uri = uriBuilder.path("/transactions/all/{id}").buildAndExpand(transactionDto.idCard()).toUri();
@@ -44,10 +50,10 @@ public class TransactionController {
 	}
 	
 	@GetMapping("card_id/{id}")
-	public ResponseEntity<Page<ResponseTransactionDto>> getAllTransactionsByCardId(Pageable pageable,  @PathVariable Long id, String referenceDate){
+	public ResponseEntity<Page<ResponseInstallmentsDto>> getAllTransactionsByCardId(@PageableDefault(size = 1000) Pageable pageable,  @PathVariable Long id, String referenceDate){
 		Map<String, String> mapDate = service.getMonthAndYearDateString(referenceDate);
-		var page = repository.findAllTransactionsByCardIdAndMonthAndYearReferences(pageable, id, mapDate.get("MONTH"), mapDate.get("YEAR"))
-				.map(ResponseTransactionDto::new);
+		var page = installmentRepository.findInstallmentsByTransactionAndMonthAndYearReferencesByIdCard(pageable, id, mapDate.get("MONTH"), mapDate.get("YEAR"))
+				.map(ResponseInstallmentsDto::new);
 		
 		return ResponseEntity.ok(page);
 	}
