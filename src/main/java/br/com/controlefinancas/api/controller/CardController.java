@@ -18,6 +18,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import br.com.controlefinancas.api.domain.card.ActiveCardDto;
 import br.com.controlefinancas.api.domain.card.Card;
 import br.com.controlefinancas.api.domain.card.CardRepository;
+import br.com.controlefinancas.api.domain.card.CardService;
 import br.com.controlefinancas.api.domain.card.RequestCardDto;
 import br.com.controlefinancas.api.domain.card.RequestCardUpdateDto;
 import br.com.controlefinancas.api.domain.card.ResponseCardActiveDTO;
@@ -32,6 +33,9 @@ public class CardController {
 	@Autowired
 	private CardRepository repository;
 	
+	@Autowired
+	private CardService service;
+	
 	@PostMapping
 	@Transactional
 	public ResponseEntity<?> registerCard(@Valid @RequestBody RequestCardDto requestDto, UriComponentsBuilder uriBuilder){
@@ -43,10 +47,11 @@ public class CardController {
 	}
 	
 	@GetMapping("/allCardsActive")
-	public ResponseEntity<Page<ResponseCardDto>> getAllCardsActive(Pageable pageable){
-		var page = repository.findAllByActiveTrue(pageable).map(ResponseCardDto::new);
+	public ResponseEntity<List<ResponseCardDto>> getAllCardsActive(){
+		var cards = repository.findAllByActiveTrue();
+		service.setDateExpirationAndBestBuyDate(cards);
 		
-		return ResponseEntity.ok(page);
+		return ResponseEntity.ok(cards.stream().map(ResponseCardDto::new).toList());
 	}
 	
 	@GetMapping
@@ -73,7 +78,7 @@ public class CardController {
 	@Transactional
 	public ResponseEntity<?> updateCard(@Valid @RequestBody RequestCardUpdateDto cardDto, @PathVariable Long id){
 		var card = repository.getReferenceById(id);
-		card.update(cardDto);
+		service.update(card, cardDto);
 		
 		return ResponseEntity.ok(new ResponseCardDto(card));
 	}
@@ -82,7 +87,7 @@ public class CardController {
 	@Transactional
 	public ResponseEntity<?> activateAndDeactivateCard(@PathVariable Long id, @RequestBody @Valid ActiveCardDto activeDto){
 		var card = repository.getReferenceById(id);
-		card.activateAndDeactivate(activeDto);
+		service.activateAndDeactivate(card, activeDto);
 		
 		return ResponseEntity.noContent().build();
 	}

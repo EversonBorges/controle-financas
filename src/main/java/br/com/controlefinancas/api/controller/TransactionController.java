@@ -22,6 +22,7 @@ import br.com.controlefinancas.api.domain.installments.ResponseInstallmentsDto;
 import br.com.controlefinancas.api.domain.transaction.RequestTransactionDto;
 import br.com.controlefinancas.api.domain.transaction.RequestTransactionUpdateDto;
 import br.com.controlefinancas.api.domain.transaction.ResponseTransactionDto;
+import br.com.controlefinancas.api.domain.transaction.ResponseTransactionUserCardDto;
 import br.com.controlefinancas.api.domain.transaction.TransactionRepository;
 import br.com.controlefinancas.api.domain.transaction.TransactionService;
 import jakarta.transaction.Transactional;
@@ -63,6 +64,19 @@ public class TransactionController {
 		var transaction = repository.getReferenceById(id);
 		
 		return ResponseEntity.ok(new ResponseTransactionDto(transaction));
+	}
+	
+	@GetMapping("user_id/{id}/{userCardId}")
+	public ResponseEntity<ResponseTransactionUserCardDto> getTransactionsByUserId(@PathVariable Long id, @PathVariable Long userCardId, String referenceDate){
+		ResponseTransactionUserCardDto infoUserCardList = null;
+		Map<String, String> mapDate = service.getMonthAndYearDateString(referenceDate);
+		var transactions = installmentRepository.findAllTransactionsByCardIdAndMonthAndYearReferencesAndUserCard(id, mapDate.get("MONTH"), mapDate.get("YEAR"), userCardId);
+		
+		if(!transactions.isEmpty()) {
+			infoUserCardList = service.getInfoTransactionUserCard(transactions, mapDate.get("MONTH"), mapDate.get("YEAR"));
+		}
+		
+		return ResponseEntity.ok(infoUserCardList);
 	}
 	
 	@PutMapping

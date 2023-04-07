@@ -1,6 +1,7 @@
 package br.com.controlefinancas.api.domain.transaction;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import br.com.controlefinancas.api.domain.UserCard.UserCardRepository;
 import br.com.controlefinancas.api.domain.card.CardRepository;
 import br.com.controlefinancas.api.domain.installments.InstallmentService;
+import br.com.controlefinancas.api.domain.installments.Installments;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
@@ -26,6 +28,7 @@ public class TransactionService {
 	@Autowired
 	private InstallmentService installmentService;
 	
+	
 	@Transactional
 	public void createTransaction(@Valid RequestTransactionDto dto){
 	
@@ -35,7 +38,7 @@ public class TransactionService {
 
 		repository.save(transaction);
 		var transactionInstallments = repository.getReferenceById(transaction.getId());
-		installmentService.createInstallment(transactionInstallments);
+		installmentService.createInstallment(card, transactionInstallments);
 	}
 	
 	public Transaction update(RequestTransactionUpdateDto dto) {
@@ -79,5 +82,33 @@ public class TransactionService {
 		
 		return monthAndYear;
 	}
+
+	public ResponseTransactionUserCardDto getInfoTransactionUserCard(List<Installments> installments,
+			String month, String year) {
+		
+		 Map<String, Object> infoUserCard = createTransactionInfoUserCard(installments, month, year);
+		return new ResponseTransactionUserCardDto(infoUserCard);
+	}
+	
+	private Map<String, Object> createTransactionInfoUserCard(List<Installments> installments, String month, String year) {
+		
+		Map<String, Object> infoUserCard = new HashMap<String, Object>();
+		infoUserCard.put("USER_NAME", installments.get(0).getTransaction().getUserCard().getNameUser());
+		infoUserCard.put("MONTH_YEAR", month + "/" + year);
+		
+		Double totalValuePurchase = (double) 0L;
+		Integer totalTransactions = 0;
+		
+		for (Installments installment : installments) {
+			totalValuePurchase += installment.getValueInstallments();
+			totalTransactions ++;
+		}
+		
+		infoUserCard.put("TOTAL_VALUE_PURCHASE", totalValuePurchase);
+		infoUserCard.put("TOTAL_TRANSACTIONS", totalTransactions);
+		
+		return infoUserCard;
+	}
+
 
 }
